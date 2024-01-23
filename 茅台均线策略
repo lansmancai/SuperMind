@@ -1,0 +1,20 @@
+def init(context):
+    g.index='600519.SH'
+
+def handle_bar(context,bar_dict):
+    close = history(g.index, ['close'], 10, '1d', False, fq = 'pre', is_panel=0)
+    MA5 = close['close'].values[-5:].mean()   
+    #计算二十日均线价格   
+    MA10 = close['close'].values.mean()   
+    #如果五日均线大于二十日均线   
+    if MA5 > MA10:            
+        #使用所有现金买入证券            
+        order_target_percent(g.index,1)  
+        #记录本次买入
+        log.info("全仓买入{0}".format(g.index))
+    #如果五日均线小于二十日均线           
+    if MA5 < MA10 :            
+        #卖出所有证券            
+        order_target_percent(g.index,0)
+        #记录本次卖出
+        log.info("全仓卖出{0}".format(g.index))
